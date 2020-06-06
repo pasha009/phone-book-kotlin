@@ -1,0 +1,67 @@
+type: edu
+custom_name: stage2
+files:
+- name: test/PhoneBookTest.java
+  visible: false
+  text: |
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testcase.TestCase;
+    import phonebook.MainKt;
+
+    import java.util.Arrays;
+    import java.util.List;
+
+    public class PhoneBookTest extends StageTest {
+        public PhoneBookTest() {
+            super(MainKt.class);
+        }
+
+        @Override
+        public List<TestCase> generate() {
+            return Arrays.asList(
+                new TestCase().setTimeLimit(30 * 60 * 1000)
+            );
+        }
+
+        @Override
+        public CheckResult check(String reply, Object clue) {
+            reply = reply.toLowerCase();
+            return new CheckResult(
+                reply.contains("start searching")
+                    && reply.contains("found")
+                    && reply.contains("min.")
+                    && reply.contains("sec.")
+                    && reply.contains("ms.")
+                    && reply.contains("sorting time")
+                    && reply.contains("searching time")
+                    && reply.contains("linear search")
+                    && reply.contains("bubble sort")
+                    && reply.contains("jump search"));
+        }
+    }
+  learner_created: false
+- name: src/phonebook/Main.kt
+  visible: true
+  text: "package phonebook\n\nimport java.io.File\n\nfun main() {\n    val baseDirectory\
+    \ = \"/home/pasha/Desktop\"\n    val directory = File(\"$baseDirectory/directory.txt\"\
+    ).readLines()\n    val findStrings = File(\"$baseDirectory/find.txt\").readLines()\n\
+    \n\n    fun entriesEqual(directoryEntry: String, queryEntry: String): Boolean\
+    \ {\n        val directoryEntryList = directoryEntry.split(' ')\n        val queryEntryList\
+    \ = queryEntry.split(' ')\n        if (directoryEntryList.size != queryEntryList.size\
+    \ + 1) return false\n        for (index in queryEntryList.indices) {\n       \
+    \     if (directoryEntryList[index + 1] != queryEntryList[index]) return false\n\
+    \        }\n        return true\n    }\n\n    fun linearSearch(query: String):\
+    \ Boolean {\n        for (line in directory) {\n            if (entriesEqual(line,\
+    \ query)) {\n                return true\n            }\n        }\n        return\
+    \ false\n    }\n\n    println(\"Start searching...\")\n    var entriesFound =\
+    \ 0\n\n    val timeStart = System.currentTimeMillis()\n    for (query in findStrings)\
+    \ {\n        if(linearSearch(query)) entriesFound++\n    }\n    val timeEnd =\
+    \ System.currentTimeMillis()\n\n    val diff: Long = timeEnd - timeStart\n   \
+    \ val milliSeconds = diff % 1000\n    val seconds = (diff / 1000 % 60)\n    val\
+    \ minutes = (diff / (1000 * 60))\n    \n    println(\"Found $entriesFound / ${findStrings.size}.\
+    \ Time taken: $minutes min. $seconds sec. $milliSeconds ms.\")\n}\n"
+  learner_created: true
+feedback_link: https://hyperskill.org/projects/86/stages/477/implement
+status: Solved
+record: 2
